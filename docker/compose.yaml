@@ -5,7 +5,7 @@ services:
       context: ../../..
       dockerfile: src/rosflight_ros_pkgs/docker/Dockerfile
       args:
-        - ROS_DISTRO=humble
+        - ROS_DISTRO=lyrical
         - HOST_UID=${HOST_UID:-1000}
 
     # Enable interactive shell

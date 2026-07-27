@@ -6,19 +6,20 @@ Last Modified: July 17, 2023
 Description: ROS2 launch file used to launch all parts needed for the gazebo simulation
 """
 
-import os
 import sys
 
-from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch_ros.actions import Node
+from launch_ros.substitutions import FindPackageShare
 
 
 def generate_launch_description():
     """This is a launch file that runs the bare minimum requirements fly a fixedwing in gazebo"""
+
+    rosflight_sim_share = FindPackageShare("rosflight_sim")
 
     # Declare launch arguments
     use_sim_time_arg = DeclareLaunchArgument(
@@ -36,12 +37,9 @@ def generate_launch_description():
 
     # Start simulator
     simulator_launch_include = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            os.path.join(
-                get_package_share_directory("rosflight_sim"),
-                "launch/gazebo_rf_sim.launch.py",
-            )
-        ]),
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([rosflight_sim_share, "launch", "gazebo_rf_sim.launch.py"])
+        ),
         launch_arguments={
             'robot_namespace': 'fixedwing'
         }.items()
@@ -49,12 +47,9 @@ def generate_launch_description():
 
     # Start independent nodes
     independent_nodes_include = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            os.path.join(
-                get_package_share_directory("rosflight_sim"),
-                "launch", "common_nodes_gazebo.launch.py",
-            )
-        ]),
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([rosflight_sim_share, "launch", "common_nodes_gazebo.launch.py"])
+        ),
         launch_arguments={
             'use_sim_time': use_sim_time
         }.items()
@@ -67,8 +62,11 @@ def generate_launch_description():
         name="fixedwing_forces_and_moments",
         output="screen",
         parameters=[
-            os.path.join(get_package_share_directory('rosflight_sim'),
-                                 f'params/{aircraft}_dynamics.yaml'),
+            PathJoinSubstitution([
+                rosflight_sim_share,
+                'params',
+                f'{aircraft}_dynamics.yaml',
+            ]),
             {"use_sim_time": use_sim_time},
         ],
     )

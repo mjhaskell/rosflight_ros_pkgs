@@ -2,9 +2,8 @@
 import threading
 import rclpy
 from rclpy.node import Node
-from ament_index_python.packages import get_package_share_directory
+from ament_index_python.packages import get_package_share_path
 from pathlib import Path
-import os
 import numpy as np
 from scipy.spatial.transform import Rotation
 from rosflight_msgs.msg import SimState, RangeFinderSensor, RGBCamera
@@ -43,11 +42,8 @@ class HoloOceanNode(Node):
 
         # Construct scenario path.
         scenario_file = f'{self.env}_{self.agent}.json'
-        scenario_path = os.path.join(
-            get_package_share_directory('rosflight_sim'),
-            'config',
-            scenario_file
-        )
+        rosflight_sim_path = get_package_share_path('rosflight_sim')
+        scenario_path = rosflight_sim_path / 'config' / scenario_file
 
         # Error handling for missing scenario file.
         if not Path(scenario_path).is_file():

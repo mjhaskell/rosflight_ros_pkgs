@@ -4,18 +4,20 @@ Author: Brandon Sutherland, Andema Mongane, Jacob Moore
 Description: ROS2 launch file used to launch all the nodes to simulate a multirotor in HoloOcean
 """
 
-import os
-
-from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import IncludeLaunchDescription, DeclareLaunchArgument
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
-    dynamics_param_file = os.path.join(get_package_share_directory('rosflight_sim'), 'params', 'multirotor_dynamics.yaml')
+    rosflight_sim_share = FindPackageShare('rosflight_sim')
+
+    dynamics_param_file = PathJoinSubstitution(
+        [rosflight_sim_share, 'params', 'multirotor_dynamics.yaml']
+    )
 
     # Declare launch arguments
     use_sim_time_arg = DeclareLaunchArgument(
@@ -31,12 +33,9 @@ def generate_launch_description():
 
     # Start simulator
     simulator_launch_include = IncludeLaunchDescription(
-        PythonLaunchDescriptionSource([
-            os.path.join(
-                get_package_share_directory("rosflight_sim"),
-                "launch/holoocean_sim.launch.py",
-            )
-        ]),
+        PythonLaunchDescriptionSource(
+            PathJoinSubstitution([rosflight_sim_share, 'launch', 'holoocean_sim.launch.py'])
+        ),
         launch_arguments={
             'agent': 'multirotor'
         }.items()
@@ -46,9 +45,8 @@ def generate_launch_description():
     # Start common nodes
     common_nodes_include = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory("rosflight_sim"),
-                "launch", "common_nodes_standalone.launch.py"
+            PathJoinSubstitution(
+                [rosflight_sim_share, 'launch', 'common_nodes_standalone.launch.py']
             )
         ),
         launch_arguments={

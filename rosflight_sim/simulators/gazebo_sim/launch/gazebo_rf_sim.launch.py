@@ -6,16 +6,15 @@ Last Modified: July 21, 2023
 Description: ROS2 launch file used to launch Gazebo with the rosflight SIL.
 """
 
-import os
 import sys
-from pathlib import Path
 
 import xacro
-from ament_index_python import get_package_share_directory
+from ament_index_python import get_package_share_path
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import TextSubstitution, LaunchConfiguration
+from launch.substitutions import TextSubstitution, LaunchConfiguration, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 
 
@@ -36,6 +35,8 @@ def generate_launch_description():
 
     if aircraft == 'multirotor':
         aircraft_3d_file = 'multirotor'
+
+    rosflight_sim_share = FindPackageShare("rosflight_sim")
 
 
     # Launch Arguments
@@ -69,9 +70,9 @@ def generate_launch_description():
     )
     world_file = LaunchConfiguration('world_file')
     world_file_launch_arg = DeclareLaunchArgument(
-        'world_file', default_value=TextSubstitution(text=os.path.join(
-            get_package_share_directory('rosflight_sim'), 'gazebo_resource/runway.world'
-        ))
+        'world_file', default_value=PathJoinSubstitution(
+            [rosflight_sim_share, 'gazebo_resource', 'runway.world']
+        )
     )
     tf_prefix = LaunchConfiguration('tf_prefix')
     tf_prefix_launch_argument = DeclareLaunchArgument(
@@ -93,9 +94,8 @@ def generate_launch_description():
     # Start simulator
     gazebo_launch_include = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory('gazebo_ros'),
-                'launch/gazebo.launch.py'
+            PathJoinSubstitution(
+                [FindPackageShare('gazebo_ros'), 'launch', 'gazebo.launch.py']
             )
         ),
         launch_arguments={
@@ -103,24 +103,25 @@ def generate_launch_description():
             'gui': gui,
             'verbose': verbose,
             'world': world_file,
-            'params_file': os.path.join(get_package_share_directory('rosflight_sim'), 'params', f'{aircraft}_dynamics.yaml')
-        }.items()
+            'params_file': PathJoinSubstitution(
+                [rosflight_sim_share, 'params', f'{aircraft}_dynamics.yaml']
+            )
+        }.items(),
     )
 
     # Render xacro file
-    xacro_filepath_string = os.path.join(get_package_share_directory('rosflight_sim'),
-                                         f'xacro/{aircraft}.urdf.xacro')
-    urdf_filepath_string = os.path.join(get_package_share_directory('rosflight_sim'),
-                                        f'gazebo_resource/{aircraft}.urdf')
+    rosflight_sim_path = get_package_share_path("rosflight_sim")
+    xacro_filepath = rosflight_sim_path / 'xacro' / f'{aircraft}.urdf.xacro'
+    urdf_filepath = rosflight_sim_path / 'gazebo_resource' / f'{aircraft}.urdf'
     robot_description = xacro.process_file(
-        xacro_filepath_string, mappings={
-            'mesh_file_location': os.path.join(
-                get_package_share_directory('rosflight_sim'),
-                f'common_resource/{aircraft_3d_file}.dae'
+        str(xacro_filepath),
+        mappings={
+            'mesh_file_location': str(
+                rosflight_sim_path / 'common_resource' / f'{aircraft_3d_file}.dae'
             )
         }
     ).toxml()
-    Path(urdf_filepath_string).write_text(robot_description)
+    urdf_filepath.write_text(robot_description)
 
     # Spawn vehicle
     spawn_vehicle_node = Node(
@@ -132,7 +133,7 @@ def generate_launch_description():
             {'tf_prefix': tf_prefix}
         ],
         arguments=[
-            '-file', urdf_filepath_string,
+            '-file', str(urdf_filepath),
             '-entity', 'robot',
             '-robot_namespace', robot_namespace,
             '-gazebo_namespace', gazebo_namespace,

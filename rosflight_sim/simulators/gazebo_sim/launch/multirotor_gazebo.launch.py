@@ -6,19 +6,20 @@ Last Modified: July 17, 2023
 Description: ROS2 launch file used to launch multirotor gazebo simulator
 """
 
-import os
 import sys
 
-from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
+from launch_ros.substitutions import FindPackageShare
 from launch_ros.actions import Node
 
 
 def generate_launch_description():
     """This is a launch file that runs the bare minimum requirements fly a multirotor in gazebo"""
+
+    rosflight_sim_share = FindPackageShare("rosflight_sim")
 
     aircraft_arg_found = False
     for i, arg in enumerate(sys.argv):
@@ -39,10 +40,7 @@ def generate_launch_description():
     # Start simulator
     simulator_launch_include = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory('rosflight_sim'),
-                'launch', 'gazebo_rf_sim.launch.py'
-            )
+            PathJoinSubstitution([rosflight_sim_share, 'launch', 'gazebo_rf_sim.launch.py'])
         ),
         launch_arguments={
             'robot_namespace': 'multirotor',
@@ -52,10 +50,7 @@ def generate_launch_description():
     # Start independent nodes
     independent_nodes_include = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(
-                get_package_share_directory("rosflight_sim"),
-                "launch", "common_nodes_gazebo.launch.py",
-            )
+            PathJoinSubstitution([rosflight_sim_share, 'launch', 'common_nodes_gazebo.launch.py'])
         ),
         launch_arguments={
             'use_sim_time': use_sim_time
@@ -69,8 +64,7 @@ def generate_launch_description():
         name="multirotor_forces_and_moments",
         output="screen",
         parameters=[
-            os.path.join(get_package_share_directory('rosflight_sim'),
-                                 f'params/multirotor_dynamics.yaml'),
+            PathJoinSubstitution([rosflight_sim_share, 'params', 'multirotor_dynamics.yaml']),
             {"use_sim_time": use_sim_time},
         ],
     )

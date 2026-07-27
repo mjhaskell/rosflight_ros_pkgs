@@ -1,5 +1,47 @@
 # Changelog
 
+## [3.0.0](https://github.com/mjhaskell/rosflight_ros_pkgs/compare/v2.0.1...v3.0.0) (2026-07-27)
+
+
+### ⚠ BREAKING CHANGES
+
+* update to ROS2
+
+### Features
+
+* add holoocean simulation files ([8018ecc](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/8018ecc03d86b0b954fbfed7885f83e23aa58af1))
+* add versioning ci using release-please ([0faaba4](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/0faaba455c5ae46cc3cafd0fc9ad11419b23d4c6))
+* added attitude control switch to vimfly ([#256](https://github.com/mjhaskell/rosflight_ros_pkgs/issues/256)) ([516ff1b](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/516ff1b87583756297d45c04532be80d11f5a956))
+* added compose and Dockerfile for rosflight users ([bff5ef5](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/bff5ef5363f3c738a1496ee42c4b9a93da48c7bf))
+* Added realtime scheduling to rosflight_io and ability to import realtime configuration for other packages. ([e91bfeb](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/e91bfebe74300d96f8f54816c280a3c5c80569d9))
+* changed /sonar topic to /range ([57ffd47](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/57ffd475550ad7b91ff4f064009b634f8c0378e7))
+* default camera for standalone on fixed wing is a 3rd person ([#255](https://github.com/mjhaskell/rosflight_ros_pkgs/issues/255)) ([739e310](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/739e310a47d19f1718eb5be5e827411ac2c5bfbe))
+* IMU bias truth publishing ([#229](https://github.com/mjhaskell/rosflight_ros_pkgs/issues/229)) ([a188754](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/a1887547a9be88ae5079daaacf1c998c9d957577))
+* Readme for docker files ([e71fb77](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/e71fb771fed5879f1af2cbd15214e53cdf84dedd))
+* update offboard command message to reflect new vector notation ([9cfc773](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/9cfc773b7ae92087f42d17236ad14fe77f60fa9d))
+* update rosflight_io mag param names to reflect new naming conventions ([#247](https://github.com/mjhaskell/rosflight_ros_pkgs/issues/247)) ([c5650f5](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/c5650f5099a253970120ac922250c42a32f95965))
+* updated CI from iron ([fd53c3c](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/fd53c3c395fedeb8c0db7143de916bdbf33be646))
+* VimFly uses single rc node ([#260](https://github.com/mjhaskell/rosflight_ros_pkgs/issues/260)) ([3ae7de0](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/3ae7de01ef565d2e9681ec58ad725d989e81c9c2))
+
+
+### Bug Fixes
+
+* add docker_user to plugdev and dialout groups for USB access ([#240](https://github.com/mjhaskell/rosflight_ros_pkgs/issues/240)) ([1ca7715](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/1ca7715d08b89c70f1d5989805344ab399a245b2))
+* Add HOST_UID build arg to Dockerfile ([#262](https://github.com/mjhaskell/rosflight_ros_pkgs/issues/262)) ([d7d8cbd](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/d7d8cbdb7c318fa0583deb7002217af2196a0977))
+* changed angular and linear accels to compute derivatives in correct frame ([caef4ec](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/caef4ec4408a5560f7c99e4866d46e8c4e5df250))
+* enabled compiling on Jazzy ([18cb899](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/18cb899ba89d136b8ff7ddd21fef078e0306cc77))
+* enabled compiling on Jazzy ([eac7b0f](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/eac7b0ffb8753a33488451d61f85cdd6eb7a3b23))
+* fixed convenience launch script path to multirotor firmware file ([dee4172](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/dee41721ea4ae4911c09605e2188f321569b8572))
+* fixed convenience launch script path to multirotor firmware file ([09c3e2b](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/09c3e2bf508bdf96e83a514dfc09295ff772a719))
+* Fixed the declination rotation to be the correct sign. ([4f93a9a](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/4f93a9a8c6f2b4bcbb3a8090682d1d0af7c582c9))
+* Fixed the declination rotation to be the correct sign. ([4d6320e](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/4d6320e2bd8761ba29c25dc2f8397a3d360230d3))
+* moved set_sim_state function call to interface and added gazebo implementation ([d8cbf37](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/d8cbf37a2ec3430dde748397bbc4f9134f88c88f))
+* reorganized launch files to correctly load mass and inertia parameters on launch ([c875f46](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/c875f462050c280ca12b11cc4e3ec3d1919be382))
+* rosflight_sil_manager previously couldn't change params ([a559232](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/a5592320ef364f426bda56dce3bcc0bcd5103722))
+* update rosflight_firmware from recent bug fixes ([ef211f1](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/ef211f18654c20661fa22504479741373f3af4a7))
+* viz transcriber path length publishes correct path length ([8d40a02](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/8d40a02a6613cfd146c2da2e2b6f9102b02ed92e))
+* wind can be changed by ros2 parameters. Renamed param to avoid double negative ([e9feb24](https://github.com/mjhaskell/rosflight_ros_pkgs/commit/e9feb2428ccb7b6a0349a1cf379b723cdde3656f))
+
 ## [2.0.1](https://github.com/rosflight/rosflight_ros_pkgs/compare/v2.0.0...v2.0.1) (2026-03-17)
 
 

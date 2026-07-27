@@ -12,7 +12,7 @@ add_compile_options(-Wall -fPIC)
 
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE "Release")
-endif(NOT CMAKE_BUILD_TYPE)
+endif()
 
 # Since Gazebo doesn't have an arm64 target, skip this package if gazebo is not found
 find_package(gazebo_ros QUIET)
@@ -34,11 +34,12 @@ link_directories(${GAZEBO_LIBRARY_DIRS})
 add_library(gazebo_dynamics_plugin SHARED
   ../../src/dynamics_interface.cpp
   src/gazebo_dynamics_plugin.cpp
-  src/gazebo_dynamics.cpp)
-target_include_directories(gazebo_dynamics_plugin
-  PRIVATE
-    ../../include
-    include)
+  src/gazebo_dynamics.cpp
+)
+target_include_directories(gazebo_dynamics_plugin PRIVATE
+  ../../include
+  include
+)
 target_link_libraries(gazebo_dynamics_plugin
   rclcpp::rclcpp
   rosflight_msgs::rosflight_msgs
@@ -56,9 +57,10 @@ install(
   LIBRARY DESTINATION lib
   ARCHIVE DESTINATION lib
   RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include)
+  INCLUDES DESTINATION include
+)
 
-# Install 
+# Install
 install(
   DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}

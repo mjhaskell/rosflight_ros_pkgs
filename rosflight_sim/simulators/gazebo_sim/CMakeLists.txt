@@ -40,17 +40,14 @@ target_include_directories(gazebo_dynamics_plugin
     ../../include
     include)
 target_link_libraries(gazebo_dynamics_plugin
-  ${rclcpp_INLCUDE_DIRS}
-  ${ament_INCLUDE_DIRS}
-  #${SDFormat_INCLUDE_DIRS}
+  rclcpp::rclcpp
+  rosflight_msgs::rosflight_msgs
+  geometry_msgs::geometry_msgs
+  std_srvs::std_srvs
   ${GAZEBO_LIBRARIES}
-  Eigen3::Eigen)
-ament_target_dependencies(gazebo_dynamics_plugin
-  rclcpp
-  std_srvs
-  rosflight_msgs
-  geometry_msgs
-  gazebo_ros)
+  gazebo_ros::gazebo_ros
+  Eigen3::Eigen
+)
 ament_export_targets(gazebo_dynamics_pluginTargets HAS_LIBRARY_TARGET)
 ament_export_dependencies(rclcpp std_srvs geometry_msgs rosflight_msgs gazebo_ros)
 install(
